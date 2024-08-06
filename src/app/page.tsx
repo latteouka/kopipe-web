@@ -20,7 +20,7 @@ export default function Home() {
   const deletePost = api.post.deletePost.useMutation();
 
   return (
-    <main className="bg-gray-50 px-10">
+    <main className="min-h-screen bg-gray-50 px-10">
       <div className="flex flex-col gap-4 p-3">
         <Label>Kopipe</Label>
         <Textarea
