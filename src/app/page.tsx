@@ -22,7 +22,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gray-50 px-10">
       <div className="flex flex-col gap-4 p-3">
-        <Label>Kopipe</Label>
+        <Label>kopipe</Label>
         <Textarea
           value={content}
           onChange={(event) => setContent(event.target.value)}
