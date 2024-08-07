@@ -10,7 +10,7 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { toast } from "sonner";
 import { Copy, Trash2 } from "lucide-react";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const [content, setContent] = useState("");
@@ -18,6 +18,10 @@ export default function Home() {
   const posts = api.post.findMany.useQuery();
   const create = api.post.create.useMutation();
   const deletePost = api.post.deletePost.useMutation();
+
+  useEffect(() => {
+    toast.warning("The data will be automatically deleted after 24 hours.");
+  }, []);
 
   return (
     <main className="min-h-screen bg-gray-50 px-10">
