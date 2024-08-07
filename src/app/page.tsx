@@ -51,9 +51,9 @@ export default function Home() {
                 text={post.content}
                 onCopy={() => toast.success("Copied!")}
               >
-                <div className="flex-1 whitespace-pre-line rounded-md border border-gray-200 bg-white p-6 text-sm">
+                <span className="flex-1 whitespace-pre-line rounded-md border border-gray-200 bg-white p-6 text-sm">
                   {post.content}
-                </div>
+                </span>
               </CopyToClipboard>
 
               <Button

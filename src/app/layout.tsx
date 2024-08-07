@@ -7,7 +7,7 @@ import { type Metadata } from "next";
 import { TRPCReactProvider } from "~/trpc/react";
 import { cn } from "~/lib/utils";
 
-import { Toaster } from "sonner";
+import { Toaster } from "~/components/ui/sonner";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -32,9 +32,9 @@ export default function RootLayout({
       )}
     >
       <body>
+        <Toaster position="top-center" />
         <TRPCReactProvider>{children}</TRPCReactProvider>
       </body>
-      <Toaster position="top-center" />
     </html>
   );
 }
