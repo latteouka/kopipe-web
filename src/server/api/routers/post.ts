@@ -1,10 +1,6 @@
 import { z } from "zod";
 
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const postRouter = createTRPCRouter({
   hello: publicProcedure
@@ -33,6 +29,16 @@ export const postRouter = createTRPCRouter({
     }),
 
   findMany: publicProcedure.query(async ({ ctx }) => {
+    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+    await ctx.db.post.deleteMany({
+      where: {
+        createdAt: {
+          lt: twentyFourHoursAgo,
+        },
+      },
+    });
+
     const posts = await ctx.db.post.findMany({
       orderBy: {
         createdAt: "desc",
