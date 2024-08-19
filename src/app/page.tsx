@@ -25,7 +25,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-gray-50 px-10">
-      <div className="flex flex-col gap-4 p-3">
+      <div className="mx-auto flex max-w-5xl flex-col gap-4 p-3">
         <Label>kopipe</Label>
         <Textarea
           value={content}
@@ -47,7 +47,7 @@ export default function Home() {
 
       <Separator />
 
-      <div className="mt-3 flex flex-col gap-6 p-3">
+      <div className="mx-auto mt-3 flex max-w-5xl flex-col gap-6 p-3">
         {posts.data?.posts.map((post) => {
           return (
             <div key={post.id} className="flex justify-between gap-2">
