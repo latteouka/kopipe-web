@@ -1,0 +1,25 @@
+name: Auto Deploy
+
+on:
+  push:
+    branches:
+      - main # or any other branch you want to trigger this workflow
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: deploy to vm
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.LINODE_HOST }}
+          username: ${{ secrets.LINODE_USERNAME }}
+          key: ${{ secrets.LINODE_SSHKEY }}
+          script: |
+            cd ${{ secrets.PROJECT_PATH }}
+            git pull
+            yarn
+            yarn build
+            pm2 restart kopipe
