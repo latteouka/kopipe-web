@@ -29,7 +29,8 @@ export const postRouter = createTRPCRouter({
     }),
 
   findMany: publicProcedure.query(async ({ ctx }) => {
-    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    // 每次進來就順便刪除超過時間
+    const twentyFourHoursAgo = new Date(Date.now() - 1 * 60 * 60 * 1000);
 
     await ctx.db.post.deleteMany({
       where: {

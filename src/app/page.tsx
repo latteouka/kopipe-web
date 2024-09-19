@@ -20,7 +20,7 @@ export default function Home() {
   const deletePost = api.post.deletePost.useMutation();
 
   useEffect(() => {
-    toast.warning("The data will be automatically deleted after 24 hours.");
+    toast.warning("The data will be automatically deleted after a hour.");
   }, []);
 
   return (
