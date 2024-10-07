@@ -11,6 +11,10 @@ import { toast } from "sonner";
 import { Copy, Trash2 } from "lucide-react";
 
 import { useEffect, useState } from "react";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime);
 
 export default function Home() {
   const [content, setContent] = useState("");
@@ -20,7 +24,7 @@ export default function Home() {
   const deletePost = api.post.deletePost.useMutation();
 
   useEffect(() => {
-    toast.warning("The data will be automatically deleted after 3 hours.");
+    toast.warning("All posts will be automatically deleted after 3 hours.");
   }, []);
 
   return (
@@ -51,8 +55,11 @@ export default function Home() {
         {posts.data?.posts.map((post) => {
           return (
             <div key={post.id} className="flex justify-between gap-2">
-              <span className="flex flex-1 items-center whitespace-pre-wrap rounded-md border border-gray-200 bg-white p-6 text-sm">
+              <span className="flex flex-1 flex-col justify-center whitespace-pre-wrap rounded-md border border-gray-200 bg-white p-6 text-sm">
                 {post.content}
+                <span className="flex w-full justify-end text-gray-400">
+                  {dayjs(post.createdAt).fromNow()}
+                </span>
               </span>
 
               <div className="flex flex-col">
