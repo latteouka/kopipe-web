@@ -31,7 +31,7 @@ export default function RootLayout({
         fontSans.variable,
       )}
     >
-      <body className="min-h-screen bg-gray-50">
+      <body className="min-h-screen bg-white">
         <Toaster position="bottom-center" />
         <TRPCReactProvider>{children}</TRPCReactProvider>
       </body>
