@@ -1,6 +1,6 @@
 const Svg = () => {
   return (
-    <div className="relative h-[512px] w-[512px] bg-white">
+    <div className="relative h-[512px] w-[512px] bg-transparent">
       <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center">
         <svg
           xmlns="http://www.w3.org/2000/svg"
