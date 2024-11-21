@@ -55,7 +55,7 @@ export default function Home() {
         {posts.data?.posts.map((post) => {
           return (
             <div key={post.id} className="flex justify-between gap-2">
-              <span className="flex flex-1 flex-col justify-center whitespace-pre-wrap rounded-md border border-gray-200 bg-white p-6 text-sm">
+              <span className="flex flex-1 flex-col justify-center whitespace-pre-wrap break-all rounded-md border border-gray-200 bg-white p-6 text-sm">
                 {post.content}
                 <span className="flex w-full justify-end text-gray-400">
                   {dayjs(post.createdAt).fromNow()}
