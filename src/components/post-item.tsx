@@ -58,7 +58,10 @@ const PostItem = ({ post }: Props) => {
         </CopyToClipboard>
 
         {post.filename && (
-          <a href={`${env.NEXT_PUBLIC_BASE_URL}/${post.filename}`} download>
+          <a
+            href={`${env.NEXT_PUBLIC_UPLOAD_FILE_URL}/${post.filename}`}
+            download
+          >
             <Button variant="ghost" size="icon">
               <Download className="h-4 w-4" />
             </Button>

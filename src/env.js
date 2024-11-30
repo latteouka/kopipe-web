@@ -32,6 +32,7 @@ export const env = createEnv({
    */
   client: {
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
+    NEXT_PUBLIC_UPLOAD_FILE_URL: z.string(),
     NEXT_PUBLIC_BASE_URL: z.string(),
   },
 
@@ -45,6 +46,7 @@ export const env = createEnv({
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     UPLOAD_DIR: process.env.UPLOAD_DIR,
+    NEXT_PUBLIC_UPLOAD_FILE_URL: process.env.NEXT_PUBLIC_BASE_URL,
     NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
   },
   /**
