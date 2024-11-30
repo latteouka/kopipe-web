@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect } from "react";
 import { toast } from "sonner";
 import useLocalStorageState from "use-local-storage-state";
@@ -11,21 +13,9 @@ const Alert = () => {
   });
 
   useEffect(() => {
-    if (status.version < 2) {
-      setStatus({
-        ...status,
-        version: 2,
-      });
-    }
+    console.log(status);
+  }, [status.showed]);
 
-    if (!status.showed) {
-      toast.info("已更新上傳檔案功能");
-      setStatus({
-        ...status,
-        showed: true,
-      });
-    }
-  }, []);
-  return <div></div>;
+  return <div />;
 };
 export default Alert;

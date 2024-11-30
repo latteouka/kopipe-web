@@ -33,33 +33,33 @@ export const postRouter = createTRPCRouter({
 
   findMany: publicProcedure.query(async ({ ctx }) => {
     // 每次進來就順便刪除超過時間
-    const twentyFourHoursAgo = new Date(Date.now() - 3 * 60 * 60 * 1000);
-
-    try {
-      const shouldDeletePosts = await ctx.db.post.findMany({
-        where: {
-          createdAt: {
-            lt: twentyFourHoursAgo,
-          },
-        },
-      });
-
-      for (const post of shouldDeletePosts) {
-        await axios.post<{ success: boolean; message: string }>("/api/delete", {
-          filename: post.filename,
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-
-    await ctx.db.post.deleteMany({
-      where: {
-        createdAt: {
-          lt: twentyFourHoursAgo,
-        },
-      },
-    });
+    // const twentyFourHoursAgo = new Date(Date.now() - 3 * 60 * 60 * 1000);
+    //
+    // try {
+    //   const shouldDeletePosts = await ctx.db.post.findMany({
+    //     where: {
+    //       createdAt: {
+    //         lt: twentyFourHoursAgo,
+    //       },
+    //     },
+    //   });
+    //
+    //   for (const post of shouldDeletePosts) {
+    //     await axios.post<{ success: boolean; message: string }>("/api/delete", {
+    //       filename: post.filename,
+    //     });
+    //   }
+    // } catch (error) {
+    //   console.log(error);
+    // }
+    //
+    // await ctx.db.post.deleteMany({
+    //   where: {
+    //     createdAt: {
+    //       lt: twentyFourHoursAgo,
+    //     },
+    //   },
+    // });
 
     const posts = await ctx.db.post.findMany({
       orderBy: {

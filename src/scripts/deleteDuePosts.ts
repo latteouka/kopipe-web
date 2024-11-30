@@ -5,7 +5,8 @@ export const prisma = new PrismaClient();
 
 const main = async () => {
   // 3 hours
-  const dueTime = new Date(Date.now() - 3 * 60 * 60 * 1000);
+  // const dueTime = new Date(Date.now() - 3 * 60 * 60 * 1000);
+  const dueTime = new Date(Date.now() - 20 * 1000);
 
   const shouldDeletePosts = await prisma.post.findMany({
     where: {

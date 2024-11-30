@@ -67,7 +67,6 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-gray-50 px-10">
-      <Alert />
       <div className="mx-auto flex max-w-5xl flex-col gap-4 p-3">
         <Label>kopipe</Label>
         <div className="flex gap-3">
@@ -146,6 +145,7 @@ export default function Home() {
           return <PostItem key={post.id} post={post} />;
         })}
       </motion.div>
+      <Alert />
     </main>
   );
 }
