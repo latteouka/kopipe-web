@@ -17,6 +17,7 @@ import axios from "axios";
 import { X } from "lucide-react";
 import cn from "classnames";
 import { motion } from "framer-motion";
+import Alert from "~/components/alert";
 
 dayjs.extend(relativeTime);
 
@@ -58,14 +59,15 @@ export default function Home() {
     setSelectedFile(null);
   };
 
-  useEffect(() => {
-    toast.warning(
-      "All posts and files will be automatically deleted after 3 hours.",
-    );
-  }, []);
+  // useEffect(() => {
+  //   toast.warning(
+  //     "All posts and files will be automatically deleted after 3 hours.",
+  //   );
+  // }, []);
 
   return (
     <main className="min-h-screen bg-gray-50 px-10">
+      <Alert />
       <div className="mx-auto flex max-w-5xl flex-col gap-4 p-3">
         <Label>kopipe</Label>
         <div className="flex gap-3">
