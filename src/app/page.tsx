@@ -107,6 +107,7 @@ export default function Home() {
               try {
                 let filename: string | undefined;
                 if (!content && !selectedFile) {
+                  toast.error("Input content or upload a file.");
                   setCreating(false);
                   return;
                 }
