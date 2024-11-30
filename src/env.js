@@ -23,7 +23,6 @@ export const env = createEnv({
       process.env.VERCEL ? z.string() : z.string().url(),
     ),
     UPLOAD_DIR: z.string(),
-    BASE_URL: z.string(),
   },
 
   /**
@@ -46,7 +45,6 @@ export const env = createEnv({
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     UPLOAD_DIR: process.env.UPLOAD_DIR,
-    BASE_URL: process.env.BASE_URL,
     NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
   },
   /**
