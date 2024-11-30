@@ -15,12 +15,14 @@ export const postRouter = createTRPCRouter({
     .input(
       z.object({
         content: z.string(),
+        filename: z.string().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
       const post = await ctx.db.post.create({
         data: {
           content: input.content,
+          filename: input.filename,
         },
       });
       return {

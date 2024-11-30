@@ -6,92 +6,141 @@ import { Label } from "~/components/ui/label";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 
-import { CopyToClipboard } from "react-copy-to-clipboard";
 import { toast } from "sonner";
-import { Copy, Trash2 } from "lucide-react";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import PostItem from "~/components/post-item";
+import { useDropzone } from "react-dropzone";
+import axios from "axios";
+import { X } from "lucide-react";
+import cn from "classnames";
+import { LoadingSpinner } from "~/components/loading";
+import { motion } from "framer-motion";
 
 dayjs.extend(relativeTime);
 
 export default function Home() {
+  const [creating, setCreating] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [content, setContent] = useState("");
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    if (acceptedFiles[0]) {
+      setSelectedFile(acceptedFiles[0]);
+    }
+  }, []);
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   const posts = api.post.findMany.useQuery();
   const create = api.post.create.useMutation();
-  const deletePost = api.post.deletePost.useMutation();
+
+  const uploadFile = async (): Promise<string> => {
+    if (!selectedFile) throw new Error();
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+
+    const response = await axios.post<{ success: boolean; name?: string }>(
+      "/api/upload",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      },
+    );
+
+    if (!response.data.name) throw new Error();
+    return response.data.name;
+  };
+
+  const clearFile = () => {
+    setSelectedFile(null);
+  };
 
   useEffect(() => {
-    toast.warning("All posts will be automatically deleted after 3 hours.");
+    toast.warning(
+      "All posts and files will be automatically deleted after 3 hours.",
+    );
   }, []);
 
   return (
     <main className="min-h-screen bg-gray-50 px-10">
       <div className="mx-auto flex max-w-5xl flex-col gap-4 p-3">
         <Label>kopipe</Label>
-        <Textarea
-          value={content}
-          onChange={(event) => setContent(event.target.value)}
-          className="h-32"
-        />
-        <div className="flex justify-end">
+        <div className="flex gap-3">
+          <Textarea
+            value={content}
+            onChange={(event) => setContent(event.target.value)}
+            className="h-32"
+          />
+          <div
+            {...getRootProps()}
+            className={cn(
+              isDragActive
+                ? "border-gray-500 text-gray-500"
+                : "border-gray-300 text-gray-400",
+              "m-1 flex w-64 cursor-pointer items-center justify-center rounded-md border-2 border-dashed p-2",
+            )}
+          >
+            <input {...getInputProps()} />
+            {isDragActive ? <p>Drop!!</p> : <p>Drag or Click</p>}
+          </div>
+        </div>
+
+        {selectedFile?.name && (
+          <div className="flex items-center gap-3 px-1 text-gray-600">
+            <div>{selectedFile.name}</div>
+            <X
+              size={16}
+              onClick={() => clearFile()}
+              className="cursor-pointer transition-all duration-300 hover:text-gray-400"
+            />
+          </div>
+        )}
+
+        <motion.div className="flex justify-end" layout>
           <Button
+            disabled={creating}
             onClick={async () => {
-              await create.mutateAsync({ content });
-              await posts.refetch();
-              setContent("");
+              setCreating(true);
+              try {
+                let filename: string | undefined;
+                if (!content && !selectedFile) return;
+
+                if (selectedFile) {
+                  filename = await uploadFile();
+                }
+
+                await create.mutateAsync({ content, filename });
+                await posts.refetch();
+                setContent("");
+                setSelectedFile(null);
+                setCreating(false);
+              } catch (error) {
+                console.log(error);
+                setCreating(false);
+              }
             }}
           >
             Add
           </Button>
-        </div>
+        </motion.div>
       </div>
 
-      <Separator />
+      <motion.div layout>
+        <Separator />
+      </motion.div>
 
-      <div className="mx-auto mt-3 flex max-w-5xl flex-col gap-6 p-3">
+      <motion.div
+        className="mx-auto mt-3 flex max-w-5xl flex-col gap-6 p-3"
+        layout
+      >
         {posts.data?.posts.map((post) => {
-          return (
-            <div key={post.id} className="flex justify-between gap-2">
-              <span className="flex flex-1 flex-col justify-center whitespace-pre-wrap break-all rounded-md border border-gray-200 bg-white p-6 text-sm">
-                {post.content}
-                <span className="flex w-full justify-end text-gray-400">
-                  {dayjs(post.createdAt).fromNow()}
-                </span>
-              </span>
-
-              <div className="flex flex-col">
-                <CopyToClipboard
-                  text={post.content}
-                  onCopy={() => {
-                    toast.success("Copied!");
-                  }}
-                >
-                  <Button variant="ghost" size="icon">
-                    <Copy className="h-4 w-4" />
-                  </Button>
-                </CopyToClipboard>
-
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={async () => {
-                    const toastId = toast.loading("刪除中");
-                    await deletePost.mutateAsync({ id: post.id });
-                    await posts.refetch();
-                    toast.dismiss(toastId);
-                    toast.success("刪除完畢");
-                  }}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          );
+          return <PostItem key={post.id} post={post} />;
         })}
-      </div>
+      </motion.div>
     </main>
   );
 }

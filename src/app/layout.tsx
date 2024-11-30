@@ -32,7 +32,7 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-screen bg-white">
-        <Toaster position="bottom-center" />
+        <Toaster position="bottom-left" />
         <TRPCReactProvider>{children}</TRPCReactProvider>
       </body>
     </html>
