@@ -46,7 +46,7 @@ export const env = createEnv({
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     UPLOAD_DIR: process.env.UPLOAD_DIR,
-    NEXT_PUBLIC_UPLOAD_FILE_URL: process.env.NEXT_PUBLIC_BASE_URL,
+    NEXT_PUBLIC_UPLOAD_FILE_URL: process.env.NEXT_PUBLIC_UPLOAD_FILE_URL,
     NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
   },
   /**
