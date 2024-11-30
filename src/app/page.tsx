@@ -16,7 +16,6 @@ import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { X } from "lucide-react";
 import cn from "classnames";
-import { LoadingSpinner } from "~/components/loading";
 import { motion } from "framer-motion";
 
 dayjs.extend(relativeTime);

@@ -23,20 +23,23 @@ const PostItem = ({ post }: Props) => {
   const [disabled, setDisabled] = useState(false);
   const posts = api.post.findMany.useQuery();
   const deletePost = api.post.deletePost.useMutation();
-  console.log(post);
 
   const deleteFile = async () => {
-    const response = await axios.post<{ success: boolean; message: string }>(
-      "/api/delete",
-      {
-        filename: post.filename,
-      },
-    );
+    await axios.post<{ success: boolean; message: string }>("/api/delete", {
+      filename: post.filename,
+    });
   };
   return (
     <motion.div className="flex justify-between gap-2" layout>
       <span className="flex flex-1 flex-col justify-center whitespace-pre-wrap break-all rounded-md border border-gray-200 bg-white p-6 text-sm text-gray-700">
         {post.content === "" ? post.filename : post.content}
+
+        {post.filename && post.content && (
+          <span className="mt-2 flex w-full justify-start text-gray-400">
+            {post.filename}
+          </span>
+        )}
+
         <span className="flex w-full justify-end text-gray-400">
           {dayjs(post.createdAt).fromNow()}
         </span>
