@@ -106,7 +106,10 @@ export default function Home() {
               setCreating(true);
               try {
                 let filename: string | undefined;
-                if (!content && !selectedFile) return;
+                if (!content && !selectedFile) {
+                  setCreating(false);
+                  return;
+                }
 
                 if (selectedFile) {
                   filename = await uploadFile();
