@@ -31,7 +31,7 @@ export const POST = async (req: NextRequest) => {
       success: true,
       message: "File deleted successfully",
     });
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json({
       success: false,
       message: "An error occurred while deleting the file",

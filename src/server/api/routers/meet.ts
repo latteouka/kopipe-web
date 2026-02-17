@@ -18,7 +18,7 @@ export const meetRouter = createTRPCRouter({
       return {
         url: result.url,
       };
-    } catch (error) {
+    } catch (_error) {
       throw new TRPCError({
         code: "BAD_REQUEST",
         message: "不要一直按！",

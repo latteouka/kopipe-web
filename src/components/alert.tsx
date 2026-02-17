@@ -1,11 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
-import { toast } from "sonner";
 import useLocalStorageState from "use-local-storage-state";
 
 const Alert = () => {
-  const [status, setStatus] = useLocalStorageState("status", {
+  const [status] = useLocalStorageState("status", {
     defaultValue: {
       version: 2,
       showed: false,
@@ -14,7 +13,7 @@ const Alert = () => {
 
   useEffect(() => {
     console.log(status);
-  }, [status.showed]);
+  }, [status]);
 
   return <div />;
 };

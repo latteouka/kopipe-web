@@ -8,7 +8,7 @@ import { Separator } from "~/components/ui/separator";
 
 import { toast } from "sonner";
 
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import PostItem from "~/components/post-item";
