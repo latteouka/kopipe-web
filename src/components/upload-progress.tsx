@@ -1,34 +1,27 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  RADIUS,
+  CIRCUMFERENCE,
+  RING_COLORS,
+  STATUS_TEXTS,
+  calculateOffset,
+  type UploadStatus,
+} from "./upload-progress-utils";
 
 interface UploadProgressProps {
   progress: number;
   filename: string;
-  status: "uploading" | "done" | "error";
+  status: UploadStatus;
 }
-
-const RADIUS = 24;
-const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
-
-const RING_COLORS: Record<UploadProgressProps["status"], string> = {
-  done: "#22c55e",
-  error: "#ef4444",
-  uploading: "#3b82f6",
-};
-
-const STATUS_TEXTS: Record<UploadProgressProps["status"], string> = {
-  done: "Done",
-  error: "Failed",
-  uploading: "Uploading...",
-};
 
 export default function UploadProgress({
   progress,
   filename,
   status,
 }: Readonly<UploadProgressProps>) {
-  const offset = CIRCUMFERENCE * (1 - progress / 100);
+  const offset = calculateOffset(progress);
   const ringColor = RING_COLORS[status];
   const statusText = STATUS_TEXTS[status];
 
