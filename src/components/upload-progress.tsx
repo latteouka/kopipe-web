@@ -39,7 +39,7 @@ export default function UploadProgress({
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -10 }}
         transition={{ duration: 0.3 }}
-        className="flex items-center gap-4"
+        className="flex items-center gap-4 rounded-xl bg-white px-4 py-3 shadow-sm ring-1 ring-gray-100"
       >
         <div className="relative h-14 w-14">
           <svg
