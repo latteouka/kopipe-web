@@ -1,11 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server";
-import path from "path";
-import fs from "fs";
+import path from "node:path";
+import fs from "node:fs";
 import { env } from "~/env";
 
-const UPLOAD_DIR = path.resolve(env.UPLOAD_DIR);
-
 export const POST = async (req: NextRequest) => {
+  const uploadDir = path.resolve(env.UPLOAD_DIR);
   const { filename } = (await req.json()) as { filename: string };
 
   if (!filename) {
@@ -15,7 +14,7 @@ export const POST = async (req: NextRequest) => {
     });
   }
 
-  const filePath = path.resolve(UPLOAD_DIR, filename);
+  const filePath = path.resolve(uploadDir, filename);
 
   try {
     if (!fs.existsSync(filePath)) {
@@ -31,10 +30,10 @@ export const POST = async (req: NextRequest) => {
       success: true,
       message: "File deleted successfully",
     });
-  } catch (_error) {
+  } catch (error) {
     return NextResponse.json({
       success: false,
-      message: "An error occurred while deleting the file",
+      message: `Failed to delete file: ${String(error)}`,
     });
   }
 };

@@ -37,7 +37,7 @@ export default function Home() {
   const create = api.post.create.useMutation();
 
   const uploadFile = async (): Promise<string> => {
-    if (!selectedFile) throw new Error();
+    if (!selectedFile) throw new Error("No file selected");
     const formData = new FormData();
     formData.append("file", selectedFile);
 
@@ -51,19 +51,13 @@ export default function Home() {
       },
     );
 
-    if (!response.data.name) throw new Error();
+    if (!response.data.name) throw new Error("Upload failed: no filename returned");
     return response.data.name;
   };
 
   const clearFile = () => {
     setSelectedFile(null);
   };
-
-  // useEffect(() => {
-  //   toast.warning(
-  //     "All posts and files will be automatically deleted after 3 hours.",
-  //   );
-  // }, []);
 
   return (
     <main className="min-h-screen bg-gray-50 px-10">

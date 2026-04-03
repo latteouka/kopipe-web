@@ -12,12 +12,11 @@ import { createQueryClient } from "./query-client";
 
 let clientQueryClientSingleton: QueryClient | undefined = undefined;
 const getQueryClient = () => {
-  if (typeof window === "undefined") {
-    // Server: always make a new query client
+  if (typeof globalThis.window === "undefined") {
     return createQueryClient();
   }
-  // Browser: use singleton pattern to keep the same query client
-  return (clientQueryClientSingleton ??= createQueryClient());
+  clientQueryClientSingleton ??= createQueryClient();
+  return clientQueryClientSingleton;
 };
 
 export const api = createTRPCReact<AppRouter>();
@@ -36,7 +35,7 @@ export type RouterInputs = inferRouterInputs<AppRouter>;
  */
 export type RouterOutputs = inferRouterOutputs<AppRouter>;
 
-export function TRPCReactProvider(props: { children: React.ReactNode }) {
+export function TRPCReactProvider(props: Readonly<{ children: React.ReactNode }>) {
   const queryClient = getQueryClient();
 
   const [trpcClient] = useState(() =>
@@ -70,7 +69,7 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
 }
 
 function getBaseUrl() {
-  if (typeof window !== "undefined") return window.location.origin;
+  if (typeof globalThis.window !== "undefined") return globalThis.window.location.origin;
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
   return `http://localhost:${process.env.PORT ?? 3000}`;
 }

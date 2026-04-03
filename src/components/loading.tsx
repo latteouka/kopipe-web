@@ -2,7 +2,7 @@ import "./DotPulse.css";
 
 export const LoadingSpinner = ({ size }: { size?: number }) => {
   return (
-    <div role="status" className="flex items-center justify-center">
+    <output className="flex items-center justify-center">
       <svg
         aria-hidden="true"
         className="animate-spin fill-slate-300 text-slate-600 dark:text-slate-600"
@@ -21,7 +21,7 @@ export const LoadingSpinner = ({ size }: { size?: number }) => {
           fill="currentFill"
         />
       </svg>
-    </div>
+    </output>
   );
 };
 

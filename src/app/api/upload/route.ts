@@ -1,23 +1,22 @@
 import { type NextRequest, NextResponse } from "next/server";
-import path from "path";
-import fs from "fs";
+import path from "node:path";
+import fs from "node:fs";
 import { env } from "~/env";
 
-const UPLOAD_DIR = path.resolve(env.UPLOAD_DIR);
-
 export const POST = async (req: NextRequest) => {
+  const uploadDir = path.resolve(env.UPLOAD_DIR);
   const formData = await req.formData();
   const body = Object.fromEntries(formData);
   const file = (body.file as Blob) || null;
 
   if (file) {
     const buffer = Buffer.from(await file.arrayBuffer());
-    if (!fs.existsSync(UPLOAD_DIR)) {
-      fs.mkdirSync(UPLOAD_DIR);
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir);
     }
 
     fs.writeFileSync(
-      path.resolve(UPLOAD_DIR, (body.file as File).name),
+      path.resolve(uploadDir, (body.file as File).name),
       buffer,
     );
   } else {
