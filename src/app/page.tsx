@@ -16,8 +16,9 @@ import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { X } from "lucide-react";
 import cn from "classnames";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Alert from "~/components/alert";
+import UploadProgress from "~/components/upload-progress";
 
 dayjs.extend(relativeTime);
 
@@ -25,6 +26,10 @@ export default function Home() {
   const [creating, setCreating] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [content, setContent] = useState("");
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadStatus, setUploadStatus] = useState<
+    "idle" | "uploading" | "done" | "error"
+  >("idle");
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles[0]) {
@@ -41,12 +46,23 @@ export default function Home() {
     const formData = new FormData();
     formData.append("file", selectedFile);
 
+    setUploadStatus("uploading");
+    setUploadProgress(0);
+
     const response = await axios.post<{ success: boolean; name?: string }>(
       "/api/upload",
       formData,
       {
         headers: {
           "Content-Type": "multipart/form-data",
+        },
+        onUploadProgress: (progressEvent) => {
+          if (progressEvent.total) {
+            const percent = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total,
+            );
+            setUploadProgress(percent);
+          }
         },
       },
     );
@@ -109,6 +125,9 @@ export default function Home() {
 
                 if (selectedFile) {
                   filename = await uploadFile();
+                  setUploadStatus("done");
+                  await new Promise((r) => setTimeout(r, 1000));
+                  setUploadStatus("idle");
                 }
 
                 await create.mutateAsync({ content, filename });
@@ -118,6 +137,10 @@ export default function Home() {
                 setCreating(false);
               } catch (error) {
                 console.log(error);
+                if (uploadStatus !== "idle") {
+                  setUploadStatus("error");
+                  setTimeout(() => setUploadStatus("idle"), 2000);
+                }
                 setCreating(false);
               }
             }}
@@ -126,6 +149,23 @@ export default function Home() {
           </Button>
         </motion.div>
       </div>
+
+      <AnimatePresence>
+        {uploadStatus !== "idle" && selectedFile && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="mx-auto max-w-5xl px-3"
+          >
+            <UploadProgress
+              progress={uploadProgress}
+              filename={selectedFile.name}
+              status={uploadStatus}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <motion.div layout>
         <Separator />
