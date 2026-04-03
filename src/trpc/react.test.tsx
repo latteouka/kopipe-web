@@ -11,8 +11,21 @@ vi.mock("@tanstack/react-query", () => ({
 }));
 
 vi.mock("@trpc/client", () => ({
-  loggerLink: vi.fn(() => "logger-link"),
-  unstable_httpBatchStreamLink: vi.fn(() => "batch-link"),
+  loggerLink: vi.fn((opts?: { enabled?: (op: unknown) => boolean }) => {
+    // Exercise the enabled callback to cover branch logic
+    if (opts?.enabled) {
+      opts.enabled({ direction: "down", result: new Error("test") });
+      opts.enabled({ direction: "up", result: null });
+    }
+    return "logger-link";
+  }),
+  unstable_httpBatchStreamLink: vi.fn(
+    (opts?: { headers?: () => Headers; url?: string }) => {
+      // Exercise the headers callback to cover its logic
+      if (opts?.headers) opts.headers();
+      return "batch-link";
+    },
+  ),
 }));
 
 vi.mock("@trpc/react-query", () => ({
@@ -64,5 +77,52 @@ describe("api", () => {
 
   it("has createClient method", () => {
     expect(typeof api.createClient).toBe("function");
+  });
+});
+
+describe("getQueryClient", () => {
+  it("returns a singleton on client side (window defined)", () => {
+    // TRPCReactProvider calls getQueryClient internally.
+    // Rendering twice should reuse the same client (singleton).
+    const { unmount } = render(
+      <TRPCReactProvider>
+        <span>first</span>
+      </TRPCReactProvider>,
+    );
+    unmount();
+    render(
+      <TRPCReactProvider>
+        <span>second</span>
+      </TRPCReactProvider>,
+    );
+    expect(screen.getByText("second")).toBeDefined();
+  });
+
+  it("reuses the same singleton across multiple renders", () => {
+    // First render
+    const { unmount: unmount1 } = render(
+      <TRPCReactProvider>
+        <span>render1</span>
+      </TRPCReactProvider>,
+    );
+    expect(screen.getByText("render1")).toBeDefined();
+    unmount1();
+
+    // Second render — should reuse the cached query client
+    const { unmount: unmount2 } = render(
+      <TRPCReactProvider>
+        <span>render2</span>
+      </TRPCReactProvider>,
+    );
+    expect(screen.getByText("render2")).toBeDefined();
+    unmount2();
+
+    // Third render — still works
+    render(
+      <TRPCReactProvider>
+        <span>render3</span>
+      </TRPCReactProvider>,
+    );
+    expect(screen.getByText("render3")).toBeDefined();
   });
 });

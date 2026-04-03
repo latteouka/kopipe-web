@@ -172,6 +172,21 @@ describe("PostItem", () => {
     expect(screen.getByTestId("icon-trash")).toBeDefined();
   });
 
+  it("calls toast.success when copy button is clicked", async () => {
+    const userEvent = await import("@testing-library/user-event");
+    const user = userEvent.default.setup();
+    const { toast } = await import("sonner");
+
+    render(<PostItem post={mockPost} />);
+
+    // CopyToClipboard mock fires onCopy on click of its wrapper div
+    const copyIcon = screen.getByTestId("icon-copy");
+    const copyWrapper = copyIcon.closest("div")!;
+    await user.click(copyWrapper);
+
+    expect(toast.success).toHaveBeenCalledWith("Copied!");
+  });
+
   it("clicking delete calls deletePost and refetch", async () => {
     const userEvent = await import("@testing-library/user-event");
     const user = userEvent.default.setup();

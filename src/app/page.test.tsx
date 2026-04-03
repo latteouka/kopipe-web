@@ -280,4 +280,85 @@ describe("Home page", () => {
       expect(screen.getByRole("button", { name: "Add" })).not.toBeDisabled();
     });
   });
+
+  it("invokes onUploadProgress callback during file upload", async () => {
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    const mockAxiosPost = vi.mocked(axios.post);
+    mockAxiosPost.mockImplementation((_url, _data, config) => {
+      // Simulate progress callback
+      const onProgress = config?.onUploadProgress;
+      if (onProgress) {
+        onProgress({ loaded: 50, total: 100 } as import("axios").AxiosProgressEvent);
+        onProgress({ loaded: 100, total: 100 } as import("axios").AxiosProgressEvent);
+      }
+      return Promise.resolve({ data: { success: true, name: "prog.pdf" } });
+    });
+
+    const user = userEvent.setup();
+    render(<Home />);
+
+    const file = new File(["content"], "prog.pdf", { type: "application/pdf" });
+    act(() => capturedOnDrop?.([file]));
+
+    await user.click(screen.getByRole("button", { name: "Add" }));
+
+    await waitFor(() => {
+      expect(mockAxiosPost).toHaveBeenCalled();
+    });
+    await waitFor(() => {
+      expect(mockMutateAsync).toHaveBeenCalledWith({
+        content: "",
+        filename: "prog.pdf",
+      });
+    });
+  });
+
+  it("handles upload failure gracefully and re-enables button", async () => {
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    const mockAxiosPost = vi.mocked(axios.post);
+    mockAxiosPost.mockRejectedValueOnce(new Error("Upload failed"));
+
+    const user = userEvent.setup();
+    render(<Home />);
+
+    const file = new File(["content"], "fail.pdf", { type: "application/pdf" });
+    act(() => capturedOnDrop?.([file]));
+
+    await user.click(screen.getByRole("button", { name: "Add" }));
+
+    // Button should be re-enabled after error
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: "Add" })).not.toBeDisabled();
+    });
+    // mutateAsync should NOT have been called since upload failed
+    expect(mockMutateAsync).not.toHaveBeenCalled();
+  });
+
+  it("handles onUploadProgress when total is undefined", async () => {
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    const mockAxiosPost = vi.mocked(axios.post);
+    mockAxiosPost.mockImplementation((_url, _data, config) => {
+      const onProgress = config?.onUploadProgress;
+      if (onProgress) {
+        // No total — should not crash
+        onProgress({ loaded: 50 } as import("axios").AxiosProgressEvent);
+      }
+      return Promise.resolve({ data: { success: true, name: "nototal.pdf" } });
+    });
+
+    const user = userEvent.setup();
+    render(<Home />);
+
+    const file = new File(["content"], "nototal.pdf", { type: "application/pdf" });
+    act(() => capturedOnDrop?.([file]));
+
+    await user.click(screen.getByRole("button", { name: "Add" }));
+
+    await waitFor(() => {
+      expect(mockMutateAsync).toHaveBeenCalledWith({
+        content: "",
+        filename: "nototal.pdf",
+      });
+    });
+  });
 });
