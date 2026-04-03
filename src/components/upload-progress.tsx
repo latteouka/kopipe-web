@@ -11,26 +11,51 @@ interface UploadProgressProps {
 const RADIUS = 24;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
+const RING_COLORS: Record<UploadProgressProps["status"], string> = {
+  done: "#22c55e",
+  error: "#ef4444",
+  uploading: "#3b82f6",
+};
+
+const STATUS_TEXTS: Record<UploadProgressProps["status"], string> = {
+  done: "Done",
+  error: "Failed",
+  uploading: "Uploading...",
+};
+
 export default function UploadProgress({
   progress,
   filename,
   status,
-}: UploadProgressProps) {
+}: Readonly<UploadProgressProps>) {
   const offset = CIRCUMFERENCE * (1 - progress / 100);
+  const ringColor = RING_COLORS[status];
+  const statusText = STATUS_TEXTS[status];
 
-  const ringColor =
-    status === "done"
-      ? "#22c55e"
-      : status === "error"
-        ? "#ef4444"
-        : "#3b82f6";
-
-  const statusText =
-    status === "done"
-      ? "Done"
-      : status === "error"
-        ? "Failed"
-        : "Uploading...";
+  function renderCenterIcon() {
+    if (status === "done") {
+      return (
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#22c55e"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      );
+    }
+    if (status === "error") {
+      return <span className="text-red-500">!</span>;
+    }
+    return (
+      <span style={{ color: ringColor }}>{Math.round(progress)}%</span>
+    );
+  }
 
   return (
     <AnimatePresence>
@@ -69,25 +94,8 @@ export default function UploadProgress({
               className="transition-all duration-300"
             />
           </svg>
-          <div className="absolute inset-0 flex items-center justify-center text-sm font-semibold text-blue-500">
-            {status === "done" ? (
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#22c55e"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polyline points="20 6 9 17 4 12" />
-              </svg>
-            ) : status === "error" ? (
-              <span className="text-red-500">!</span>
-            ) : (
-              <span style={{ color: ringColor }}>{Math.round(progress)}%</span>
-            )}
+          <div className="absolute inset-0 flex items-center justify-center text-sm font-semibold">
+            {renderCenterIcon()}
           </div>
         </div>
         <div>
