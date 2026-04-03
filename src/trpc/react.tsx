@@ -12,7 +12,7 @@ import { createQueryClient } from "./query-client";
 
 let clientQueryClientSingleton: QueryClient | undefined = undefined;
 const getQueryClient = () => {
-  if (typeof globalThis.window === "undefined") {
+  if (globalThis.window === undefined) {
     return createQueryClient();
   }
   clientQueryClientSingleton ??= createQueryClient();
@@ -69,7 +69,7 @@ export function TRPCReactProvider(props: Readonly<{ children: React.ReactNode }>
 }
 
 function getBaseUrl() {
-  if (typeof globalThis.window !== "undefined") return globalThis.window.location.origin;
+  if (globalThis.window !== undefined) return globalThis.window.location.origin;
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
   return `http://localhost:${process.env.PORT ?? 3000}`;
 }
