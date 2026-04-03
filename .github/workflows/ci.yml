@@ -55,16 +55,10 @@ jobs:
           name: coverage
           path: coverage
         continue-on-error: true
-      - name: Verify coverage file
-        run: |
-          ls -la coverage/
-          head -30 coverage/lcov.info || true
-          grep "^SF:" coverage/lcov.info || true
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_SCANNER_OPTS: "-Dsonar.verbose=true"
 
   dependency-review:
     if: github.event_name == 'pull_request'
