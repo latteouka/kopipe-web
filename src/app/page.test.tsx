@@ -288,8 +288,8 @@ describe("Home page", () => {
       // Simulate progress callback
       const onProgress = config?.onUploadProgress;
       if (onProgress) {
-        onProgress({ loaded: 50, total: 100 } as import("axios").AxiosProgressEvent);
-        onProgress({ loaded: 100, total: 100 } as import("axios").AxiosProgressEvent);
+        onProgress({ loaded: 50, total: 100 } as unknown as import("axios").AxiosProgressEvent);
+        onProgress({ loaded: 100, total: 100 } as unknown as import("axios").AxiosProgressEvent);
       }
       return Promise.resolve({ data: { success: true, name: "prog.pdf" } });
     });
@@ -341,7 +341,7 @@ describe("Home page", () => {
       const onProgress = config?.onUploadProgress;
       if (onProgress) {
         // No total — should not crash
-        onProgress({ loaded: 50 } as import("axios").AxiosProgressEvent);
+        onProgress({ loaded: 50 } as unknown as import("axios").AxiosProgressEvent);
       }
       return Promise.resolve({ data: { success: true, name: "nototal.pdf" } });
     });

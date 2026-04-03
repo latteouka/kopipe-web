@@ -93,7 +93,7 @@ describe("postRouter – findMany procedure", () => {
     const mockFindMany = vi.fn().mockResolvedValue(mockPosts);
     const ctx = { db: { post: { findMany: mockFindMany } } };
 
-    const result = await findMany._fn({ ctx });
+    const result = await findMany._fn({ input: undefined, ctx });
     expect(mockFindMany).toHaveBeenCalledWith({ orderBy: { createdAt: "desc" } });
     expect(result).toEqual({ posts: mockPosts });
   });
