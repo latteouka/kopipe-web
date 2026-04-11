@@ -20,6 +20,6 @@ jobs:
           script: |
             cd ${{ secrets.PROJECT_PATH }}
             git pull
-            yarn
-            yarn build
+            pnpm install --frozen-lockfile
+            pnpm build
             pm2 restart kopipe
